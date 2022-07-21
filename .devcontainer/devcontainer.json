@@ -26,7 +26,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "cp -R /workspaces/olc/NetCommon /usr/include/",
+	"postCreateCommand": "sudo cp -R /workspaces/olc/NetCommon /usr/include/",
 
 	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "vscode"
