@@ -1,5 +1,5 @@
 #include <iostream>
-#include <NetCommon/last_net.h>
+#include <last_net.h>
 
 enum class CustomMsgTypes : uint32_t
 {

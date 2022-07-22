@@ -1,4 +1,4 @@
 #pragma once
 
-#include "net_common.h"
-#include "net_message.h"
+#include <NetCommon/net_common.h>
+#include <NetCommon/net_message.h>

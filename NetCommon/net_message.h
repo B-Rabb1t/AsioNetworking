@@ -1,5 +1,5 @@
 #pragma once
-#include <net_common.h>
+#include <NetCommon/net_common.h>
 
 namespace last
 {
@@ -43,7 +43,7 @@ namespace last
             }
 
             template <typename DataType>
-            friend message<T>& operator >> (message<T> msg, DataType data)
+            friend message<T>& operator >> (message<T>& msg, DataType& data)
             {
                 static_assert(std::is_standard_layout<DataType>::value, "Data complexity is too high to be present in the vector");
                 size_t i = msg.body.size() - sizeof(DataType);
