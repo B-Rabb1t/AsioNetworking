@@ -40,18 +40,20 @@ int main()
     bool bQuit = false;
     int option, old_option;
     std::thread keyReader([&option, &bQuit]()
-                          {
-        while(!bQuit)
         {
-            std::cout << "[1].Ping\n"
-                     "[2].MessageAll\n"
-                     "[99].Quit\n";
+            while(!bQuit)
+            {
+                std::cout << "[1].Ping\n"
+                        "[2].MessageAll\n"
+                        "[99].Quit\n";
 
-        std::cin >> option; 
-        } });
+                std::cin >> option; 
+            }
+        });
+    //No reason to wait for the thread to stop
+    keyReader.detach();
     do
     {
-        // TODO: Stop blocking for input
         if (option == 1 && old_option == option)
         {
             c.PingServer();
@@ -83,9 +85,8 @@ int main()
                     std::chrono::system_clock::time_point timeThen;
                     msg >> timeThen;
                     std::cout << "Ping: " << std::chrono::duration<double>(timeNow - timeThen).count() << "\n";
-
-                    break;
                 }
+                break;
 
                 case CustomMsgTypes::ServerMessage:
                 {
@@ -101,12 +102,10 @@ int main()
         {
             std::cout << "The Server was thunderstruck!\n";
             option = 99;
-        }
+        }        
         old_option = option;
 
     } while (option != 99);
 
     bQuit = true;
-
-    keyReader.join();
 }
