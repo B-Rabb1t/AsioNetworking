@@ -1,8 +1,5 @@
 #pragma once
 #include "net_common.h"
-// #include "net_message.h"
-// #include "net_tsqueue.h"
-// #include "net_connection.h"
 
 namespace last
 {
@@ -20,7 +17,7 @@ namespace last
 
         public:
             client_interface() {}
-            virtual ~client_interface() { Disconect(); }
+            virtual ~client_interface() { Disconnect(); }
             bool Connect(const std::string &host, const uint16_t port)
             {
                 try
@@ -46,7 +43,7 @@ namespace last
                 return true;
             }
 
-            void Disconect()
+            void Disconnect()
             {
                 if (IsConnected())
                     m_connection->Disconnect();
