@@ -85,16 +85,16 @@ int main()
                     std::chrono::system_clock::time_point timeThen;
                     msg >> timeThen;
                     std::cout << "Ping: " << std::chrono::duration<double>(timeNow - timeThen).count() << "\n";
+                    break;
                 }
-                break;
 
                 case CustomMsgTypes::ServerMessage:
                 {
                     uint32_t clientID;
                     msg >> clientID;
                     std::cout << "O venit: " << clientID << "\n";
+                    break;
                 }
-                break;
                 }
             }
         }
