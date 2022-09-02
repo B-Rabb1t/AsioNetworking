@@ -2,6 +2,13 @@
 
 CustomServer::CustomServer(uint16_t nPort) : last::net::server_interface<CustomMsgTypes>(nPort) {}
 
+ CustomServer* CustomServer::instance(uint16_t nPort)
+ {
+    if(!s_instance)
+        s_instance = new CustomServer(nPort);
+    return s_instance;
+ }
+
 int CustomServer::GetConnectionsCount()
 {
     return m_deqConnections.size();

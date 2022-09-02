@@ -4,51 +4,36 @@
 
 using namespace std::chrono_literals;
 
-class ServerTest : public ::testing::Test
-{
-    protected:
-    CustomServer* server;
-    std::thread running;
-    bool bQuit;
-
-    void SetUp() override
-    {
-        server = new CustomServer(60000);
-        bQuit = false;
-
-        ASSERT_TRUE(server->Start());
-        running = std::thread([this](){
-            while(!bQuit)
-                server->Update();
-        });
-    }
-
-    void TearDown() override
-    {
-        bQuit = true;
-        running.join();
-        delete server;
-    }
- };
+CustomServer* CustomServer::s_instance = nullptr;
+std::thread running;
 
 /**
- * @brief Verify the connection is succesful only for the right clients
+ * @brief Start the server and verify the connection 
+ * is succesful only for the right clients
  * The 2 valid clients should connect succesfully
  * The other one shouldn't be able to connect
  * The first client should disconnect successfully
  */
-TEST_F(ServerTest, Connection)
+TEST(ServerTest, Connection)
 {
+    ASSERT_TRUE(CustomServer::instance(60000)->Start());
+
+    running = std::thread([](){
+        while(true)
+            CustomServer::instance()->Update();
+    });
+    running.detach();
+
     CustomClient c1, c2, c3;
 
     c1.Connect("127.0.0.1", 60000);
     c2.Connect("127.0.0.1", 60000);
     std::this_thread::sleep_for(10ms);
-    ASSERT_EQ(2, server->GetConnectionsCount()) << "Missing connections!\n";
+    ASSERT_EQ(2, CustomServer::instance()->GetConnectionsCount()) << "Missing connections!\n";
 
     c3.Connect("127.0.0.0", 60000);
     std::this_thread::sleep_for(10ms);
-    ASSERT_EQ(2, server->GetConnectionsCount()) << "Wrong client connected!\n";
+    ASSERT_EQ(2, CustomServer::instance()->GetConnectionsCount()) << "Wrong client connected!\n";
 
     ASSERT_TRUE(c1.IsConnected()) << "Client lost!\n";
     c1.Disconnect();
@@ -62,7 +47,7 @@ TEST_F(ServerTest, Connection)
  * The client will receive one more message after the sever sends one 
  * to every client connected
  */
-TEST_F(ServerTest, Communication)
+TEST(ServerTest, Communication)
 {
     CustomClient client;
 
@@ -76,8 +61,10 @@ TEST_F(ServerTest, Communication)
 
     last::net::message<CustomMsgTypes> msg;
     msg.header.id = CustomMsgTypes::ServerMessage;
-    server->MessageAllClients(msg);
+    CustomServer::instance()->MessageAllClients(msg);
     std::this_thread::sleep_for(10ms);
 
     ASSERT_EQ(2, client.Incoming().count()) << "MessageAllClients Failed!\n";
+
+    delete CustomServer::instance();
 }

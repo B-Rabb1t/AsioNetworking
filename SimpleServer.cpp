@@ -1,12 +1,13 @@
 #include "CustomServer.h"
 
+CustomServer* CustomServer::s_instance = nullptr;
+
 int main()
 {
-    CustomServer server(60000);
-    server.Start();
+    CustomServer::instance(60000)->Start();
 
     while (1)
     {
-        server.Update(-1, true);
+        CustomServer::instance()->Update(-1, true);
     }
 }
