@@ -1,18 +1,8 @@
 #include <gtest/gtest.h>
-#include "CustomServer.cpp"
+#include "CustomServer.h"
+#include "CustomClient.h"
 
 using namespace std::chrono_literals;
-
-class CustomClient : public last::net::client_interface<CustomMsgTypes>
-{
-public:
-    void MessageAll()
-    {
-        last::net::message<CustomMsgTypes> msg;
-        msg.header.id = CustomMsgTypes::MessageAll;
-        Send(msg);
-    }
-};
 
 class ServerTest : public ::testing::Test
 {
@@ -40,7 +30,6 @@ class ServerTest : public ::testing::Test
         delete server;
     }
  };
-
 
 /**
  * @brief Verify the connection is succesful only for the right clients

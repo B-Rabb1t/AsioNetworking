@@ -1,36 +1,5 @@
 #include <iostream>
-#include <last_net.h>
-
-enum class CustomMsgTypes : uint32_t
-{
-    ServerAccept,
-    ServerDeny,
-    ServerPing,
-    MessageAll,
-    ServerMessage,
-};
-
-class CustomClient : public last::net::client_interface<CustomMsgTypes>
-{
-public:
-    void PingServer()
-    {
-        last::net::message<CustomMsgTypes> msg;
-        msg.header.id = CustomMsgTypes::ServerPing;
-
-        std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
-
-        msg << timeNow;
-        Send(msg);
-    }
-
-    void MessageAll()
-    {
-        last::net::message<CustomMsgTypes> msg;
-        msg.header.id = CustomMsgTypes::MessageAll;
-        Send(msg);
-    }
-};
+#include "CustomClient.h"
 
 int main()
 {

@@ -1,4 +1,4 @@
-#include "CustomServer.cpp"
+#include "CustomServer.h"
 
 int main()
 {

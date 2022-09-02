@@ -1,59 +1,44 @@
-#pragma once
-#include <last_net.h>
+#include "CustomServer.h"
 
-enum class CustomMsgTypes : uint32_t
-{
-    ServerAccept,
-    ServerDeny,
-    ServerPing,
-    MessageAll,
-    ServerMessage,
-};
+CustomServer::CustomServer(uint16_t nPort) : last::net::server_interface<CustomMsgTypes>(nPort) {}
 
-class CustomServer : public last::net::server_interface<CustomMsgTypes>
+int CustomServer::GetConnectionsCount()
 {
-protected:
-    virtual bool OnClientConnect(std::shared_ptr<last::net::connection<CustomMsgTypes>> client) override
+    return m_deqConnections.size();
+}
+
+bool CustomServer::OnClientConnect(std::shared_ptr<last::net::connection<CustomMsgTypes>> client)
+{
+    last::net::message<CustomMsgTypes> msg;
+    msg.header.id = CustomMsgTypes::ServerAccept;
+    client->Send(msg);
+    return true;
+}
+
+void CustomServer::OnClientDisconnect(std::shared_ptr<last::net::connection<CustomMsgTypes>> client)
+{
+    std::cout << "Removing client [" << client->GetID() << "]\n";
+}
+
+void CustomServer::OnMessage(std::shared_ptr<last::net::connection<CustomMsgTypes>> client, const last::net::message<CustomMsgTypes> &msg)
+{
+    switch (msg.header.id)
     {
-        last::net::message<CustomMsgTypes> msg;
-        msg.header.id = CustomMsgTypes::ServerAccept;
+    case CustomMsgTypes::ServerPing:
+    {
+        std::cout << "[" << client->GetID() << "]: Server Ping\n";
         client->Send(msg);
-        return true;
-    }
-
-    virtual void OnClientDisconnect(std::shared_ptr<last::net::connection<CustomMsgTypes>> client) override
-    {
-        std::cout << "Removing client [" << client->GetID() << "]\n";
-    }
-
-    virtual void OnMessage(std::shared_ptr<last::net::connection<CustomMsgTypes>> client, const last::net::message<CustomMsgTypes> &msg) override
-    {
-        switch (msg.header.id)
-        {
-        case CustomMsgTypes::ServerPing:
-        {
-            std::cout << "[" << client->GetID() << "]: Server Ping\n";
-            client->Send(msg);
-        }
         break;
-
-        case CustomMsgTypes::MessageAll:
-        {
-            std::cout << "[" << client->GetID() << "]: Message All\n";
-            last::net::message<CustomMsgTypes> msg;
-            msg.header.id = CustomMsgTypes::ServerMessage;
-            msg << client->GetID();
-            MessageAllClients(msg, client);
-        }
-        break;
-        }
     }
 
-public:
-    CustomServer(uint16_t nPort) : last::net::server_interface<CustomMsgTypes>(nPort) {}
-
-    int GetConnectionsCount()
+    case CustomMsgTypes::MessageAll:
     {
-        return m_deqConnections.size();
+        std::cout << "[" << client->GetID() << "]: Message All\n";
+        last::net::message<CustomMsgTypes> msg;
+        msg.header.id = CustomMsgTypes::ServerMessage;
+        msg << client->GetID();
+        MessageAllClients(msg, client);
+        break;
     }
-};
+    }
+}

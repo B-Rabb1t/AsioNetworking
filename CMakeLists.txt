@@ -4,7 +4,7 @@ project(GTesting VERSION 0.1.0)
 # include(CTest)
 # enable_testing()
 
-add_executable(GTesting testing.cpp)
+add_executable(GTesting testing.cpp CustomServer.cpp CustomClient.cpp)
 target_link_libraries(GTesting gtest gtest_main)
 
 # set(CPACK_PROJECT_NAME ${PROJECT_NAME})
