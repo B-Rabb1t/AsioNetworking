@@ -41,6 +41,13 @@ class ServerTest : public ::testing::Test
     }
  };
 
+
+/**
+ * @brief Verify the connection is succesful only for the right clients
+ * The 2 valid clients should connect succesfully
+ * The other one shouldn't be able to connect
+ * The first client should disconnect successfully
+ */
 TEST_F(ServerTest, Connection)
 {
     CustomClient c1, c2, c3;
@@ -59,6 +66,13 @@ TEST_F(ServerTest, Connection)
     ASSERT_FALSE(c1.IsConnected()) << "Client couldn't disconnect!\n";
 }
 
+/**
+ * @brief Verify that every message is received
+ * Before connecting the client shouldn't have any messages
+ * After connecting the client should receive a confirmation message
+ * The client will receive one more message after the sever sends one 
+ * to every client connected
+ */
 TEST_F(ServerTest, Communication)
 {
     CustomClient client;
