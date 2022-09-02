@@ -45,8 +45,8 @@ int main()
                 case CustomMsgTypes::ServerAccept:
                 {
                     std::cout << "Server Acepted Connection\n";
+                    break;
                 }
-                break;
 
                 case CustomMsgTypes::ServerPing:
                 {
