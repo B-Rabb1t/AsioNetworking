@@ -1,2 +1,4 @@
-test.out
 build
+SimpleClient
+SimpleServer
+.devcontainer/better_install-gtest.sh
