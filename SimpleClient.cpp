@@ -61,7 +61,7 @@ int main()
                 {
                     uint32_t clientID;
                     msg >> clientID;
-                    std::cout << "O venit: " << clientID << "\n";
+                    std::cout << "Message from: " << clientID << "\n";
                     break;
                 }
                 }
